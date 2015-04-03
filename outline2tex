@@ -1,0 +1,49 @@
+#!/bin/bash
+sed -r 's/(\{[^}]*\})/\\texttt\1/g;s/(\([^)]*\))/\\textcolor{red}{\1}/g;s/#/\\#/g;s/(^[^\t].*)/\\vspace*{1em}\\noindent{\\LARGE \1}\\vspace*{0.5em}/;' $1 | sed -r 's/(\s)"/\1``/g;' | sed -r "s/\"/''/g" | awk -f <(cat - <<'EOD'
+	BEGIN{
+		FS="\t"
+		prev=0
+		str=""
+	}
+	{
+		if (prev > 0) {
+			curr=NF-prev
+			incr = 0
+			if (curr > 0) {
+				str="\\begin{itemize}[noitemsep,nolistsep]"
+				incr=-1
+				offset = 0;
+			} else if (curr < 0) {
+				str="\\end{itemize}"
+				incr=1
+				offset = -1;
+			}
+			while (curr != 0) {
+				if (curr > 0) {
+					for (i = 0; i < (prev - curr) + offset; i++)
+						printf "\t"
+				} else {
+					for (i = NF-1 + offset - curr; i > 0; i--)
+						printf "\t"
+				}
+				printf "%s", str
+				curr = curr + incr
+				printf "\n"
+			}
+		}
+		for (i = 1; i < NF; i++)
+			printf "\t"
+		if (NF > 1)
+			print "\\item " $NF
+		else
+			print $NF
+		prev=NF
+	}
+	END{
+		for (i = prev - 1; i >= 1; i--) {
+			for (j = i - 1; j >= 1; j--)
+				printf "\t"
+			printf "\\end{itemize}\n"
+		}
+	}
+EOD)  > $(basename $1 .txt).tex

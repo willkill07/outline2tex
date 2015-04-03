@@ -1,0 +1,23 @@
+this
+	is
+	an
+	outline
+	it
+		has
+	many
+many
+		subheadings
+		each with their own
+	nestings
+anything
+is
+possible
+		when you use UNIX
+		especially when it comes to parsing plaintext
+Parens will automatically make text red
+	See: (This is an example)
+Using curly braces will change the font to fixed-width
+	See: {This is dope}
+Tabs are required
+	Spaces won't do the trick
+	I should consider supporting markdown, but this is alright.
